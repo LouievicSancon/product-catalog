@@ -11,6 +11,9 @@ export default function ProductGrid({ products }) {
 
   const categories = ['All', 'Food Products', 'Cleaning Products']
 
+  // State to track which product is currently clicked and expanded in the modal
+  const [selectedProduct, setSelectedProduct] = useState(null)
+
   const filteredProducts = (products || []).filter((product) => {
     const matchesSearch = product.name
       .toLowerCase()
@@ -82,6 +85,7 @@ export default function ProductGrid({ products }) {
           {filteredProducts.map((product) => (
             <div
               key={product.id}
+              onClick={() => setSelectedProduct(product)}
               className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden border border-orange-100 dark:border-gray-700"
             >
               <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
@@ -105,6 +109,49 @@ export default function ProductGrid({ products }) {
               </div>
             </div>
           ))}
+        </div>
+      )}
+      
+      {/* Lightbox Modal */}
+      {selectedProduct && (
+        <div
+          onClick={() => setSelectedProduct(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-2xl border border-orange-100 dark:border-gray-700 p-4"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedProduct(null)}
+              className="absolute top-3 right-3 z-10 bg-orange-100 dark:bg-gray-700 hover:bg-orange-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg transition-colors"
+            >
+              &times;
+            </button>
+
+            {/* Large Image */}
+            <div className="aspect-square w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
+              <img
+                src={selectedProduct.image_url}
+                alt={selectedProduct.name}
+                className="w-full h-full object-contain"
+              />
+            </div>
+
+            {/* Information Section */}
+            <div className="mt-4">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 px-2 py-0.5 rounded">
+                {selectedProduct.category || 'Uncategorized'}
+              </span>
+              <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mt-2">
+                {selectedProduct.name}
+              </h2>
+              <p className="text-xl font-extrabold text-red-600 dark:text-orange-400 mt-1">
+                ${Number(selectedProduct.price).toFixed(2)}
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>
