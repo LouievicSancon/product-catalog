@@ -5,8 +5,8 @@ import { useState } from 'react'
 
 export default function ProductGrid({ products }) {
   const [searchTerm, setSearchTerm] = useState('')
-  const [minPrice, setMinPrice] = useState('')
-  const [maxPrice, setMaxPrice] = useState('')
+//   const [minPrice, setMinPrice] = useState('')
+//   const [maxPrice, setMaxPrice] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
   const categories = ['All', 'Food Products', 'Cleaning Products']
@@ -14,18 +14,32 @@ export default function ProductGrid({ products }) {
   // State to track which product is currently clicked and expanded in the modal
   const [selectedProduct, setSelectedProduct] = useState(null)
 
+//   const filteredProducts = (products || []).filter((product) => {
+//     const matchesSearch = product.name
+//       .toLowerCase()
+//       .includes(searchTerm.toLowerCase())
+//     const matchesMin = minPrice === '' || product.price >= parseFloat(minPrice)
+//     const matchesMax = maxPrice === '' || product.price <= parseFloat(maxPrice)
+//     const matchesCategory =
+//       selectedCategory === 'All' ||
+//       product.category === selectedCategory
+
+//     return matchesSearch && matchesMin && matchesMax && matchesCategory
+//   })
+
+
   const filteredProducts = (products || []).filter((product) => {
     const matchesSearch = product.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
-    const matchesMin = minPrice === '' || product.price >= parseFloat(minPrice)
-    const matchesMax = maxPrice === '' || product.price <= parseFloat(maxPrice)
+    
     const matchesCategory =
       selectedCategory === 'All' ||
       product.category === selectedCategory
 
-    return matchesSearch && matchesMin && matchesMax && matchesCategory
+    return matchesSearch && matchesCategory
   })
+
 
   return (
     <div>
@@ -47,7 +61,7 @@ export default function ProductGrid({ products }) {
       </div>
 
       {/* Search and price filter controls */}
-      <div className="mb-6 flex flex-col sm:flex-row gap-3">
+      {/* <div className="mb-6 flex flex-col sm:flex-row gap-3">
         <input
           type="text"
           placeholder="Search products..."
@@ -69,7 +83,19 @@ export default function ProductGrid({ products }) {
           onChange={(e) => setMaxPrice(e.target.value)}
           className="w-32 px-4 py-2 border border-orange-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
         />
+      </div> */}
+      
+      {/* Search filter control */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full px-4 py-2 border border-orange-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
+        />
       </div>
+
 
       {/* Show filtered results or appropriate empty state */}
       {filteredProducts.length === 0 ? (
