@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState } from 'react'
@@ -6,19 +7,42 @@ export default function ProductGrid({ products }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('All')
 
-  // Filter products by name AND price range - both must match
+  const categories = ['All', 'Food Products', 'Cleaning Products']
+
   const filteredProducts = (products || []).filter((product) => {
     const matchesSearch = product.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
     const matchesMin = minPrice === '' || product.price >= parseFloat(minPrice)
     const matchesMax = maxPrice === '' || product.price <= parseFloat(maxPrice)
-    return matchesSearch && matchesMin && matchesMax
+    const matchesCategory =
+      selectedCategory === 'All' ||
+      product.category === selectedCategory
+
+    return matchesSearch && matchesMin && matchesMax && matchesCategory
   })
 
   return (
     <div>
+      {/* Category Filter Buttons */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setSelectedCategory(cat)}
+            className={`px-4 py-2 rounded-full font-medium transition-all ${
+              selectedCategory === cat
+                ? 'bg-orange-500 text-white shadow-md'
+                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-orange-100 dark:border-gray-700 hover:bg-orange-50'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
       {/* Search and price filter controls */}
       <div className="mb-6 flex flex-col sm:flex-row gap-3">
         <input
@@ -68,7 +92,11 @@ export default function ProductGrid({ products }) {
                 />
               </div>
               <div className="p-3">
-                <h3 className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
+                {/* Optional Badge showing the product's category */}
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 px-2 py-0.5 rounded">
+                  {product.category || 'Uncategorized'}
+                </span>
+                <h3 className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate mt-1">
                   {product.name}
                 </h3>
                 <p className="text-red-600 dark:text-orange-400 font-bold mt-1">
