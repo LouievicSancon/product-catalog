@@ -130,7 +130,7 @@ export default function ProductGrid({ products }) {
                   {product.name}
                 </h3>
                 <p className="text-red-600 dark:text-orange-400 font-bold mt-1">
-                  ${Number(product.price).toFixed(2)}
+                  ₱{Number(product.price).toFixed(2)}
                 </p>
               </div>
             </div>
@@ -174,7 +174,7 @@ export default function ProductGrid({ products }) {
                 {selectedProduct.name}
               </h2>
               <p className="text-xl font-extrabold text-red-600 dark:text-orange-400 mt-1">
-                ${Number(selectedProduct.price).toFixed(2)}
+                ₱{Number(selectedProduct.price).toFixed(2)}
               </p>
             </div>
           </div>

@@ -155,7 +155,7 @@ export default function AdminDashboard({ products: initialProducts }) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Price (₱)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -219,7 +219,7 @@ export default function AdminDashboard({ products: initialProducts }) {
                 className="w-full h-48 object-cover rounded-lg mb-3"
               />
               <h3 className="font-medium text-gray-800">{product.name}</h3>
-              <p className="text-red-600 font-bold">${Number(product.price).toFixed(2)}</p>
+              <p className="text-red-600 font-bold">₱{Number(product.price).toFixed(2)}</p>
               <div className="flex gap-2 mt-3">
                 <button
                   onClick={() => openEditForm(product)}
