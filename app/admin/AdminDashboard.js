@@ -12,6 +12,7 @@ export default function AdminDashboard({ products: initialProducts }) {
   const [price, setPrice] = useState('')
   const [image, setImage] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [category, setCategory] = useState('Food Products')
   const router = useRouter()
   const supabase = createClient()
 
@@ -24,6 +25,7 @@ export default function AdminDashboard({ products: initialProducts }) {
     setEditingProduct(null)
     setName('')
     setPrice('')
+    setCategory('Food Products')
     setImage(null)
     setShowForm(true)
   }
@@ -32,6 +34,7 @@ export default function AdminDashboard({ products: initialProducts }) {
     setEditingProduct(product)
     setName(product.name)
     setPrice(product.price.toString())
+    setCategory(product.category || 'Food Products')
     setImage(null)
     setShowForm(true)
   }
@@ -66,7 +69,7 @@ export default function AdminDashboard({ products: initialProducts }) {
     if (editingProduct) {
       const { error } = await supabase
         .from('products')
-        .update({ name, price: parseFloat(price), image_url: imageUrl })
+        .update({ name, price: parseFloat(price), image_url: imageUrl, category})
         .eq('id', editingProduct.id)
 
       if (error) {
@@ -77,7 +80,7 @@ export default function AdminDashboard({ products: initialProducts }) {
     } else {
       const { error } = await supabase
         .from('products')
-        .insert({ name, price: parseFloat(price), image_url: imageUrl })
+        .insert({ name, price: parseFloat(price), image_url: imageUrl, category })
 
       if (error) {
         alert('Error adding product: ' + error.message)
@@ -162,6 +165,19 @@ export default function AdminDashboard({ products: initialProducts }) {
                   className="w-full px-4 py-2 border border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full px-4 py-2 border border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+                >
+                  <option value="Food Products">Food Products</option>
+                  <option value="Cleaning Products">Cleaning Products</option>
+                </select>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Product Image {editingProduct && '(leave empty to keep current)'}
