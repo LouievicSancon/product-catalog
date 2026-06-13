@@ -8,7 +8,7 @@ export default function ProductGrid({ products }) {
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [isPanelOpen, setIsPanelOpen] = useState(false)
 
-  // Alphabetically ordered custom category list (with "All" pinned strictly at the top)
+  // Alphabetically ordered custom category list
   const categories = [
     'All',
     'Biscuit, Chocolates, and Candy Products',
@@ -18,115 +18,190 @@ export default function ProductGrid({ products }) {
     'Pantry Staples Products'
   ]
 
-  // Filter products based on search query and selected category
+  // Filter products cleanly using safe sequential if-statements (prevents ampersand double-escaping compiler errors)
   const filteredProducts = (products || []).filter((product) => {
     const matchesSearch = product.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
+    
     const matchesCategory =
       selectedCategory === 'All' ||
       product.category === selectedCategory
-    return matchesSearch && matchesCategory
+
+    if (!matchesSearch) return false
+    if (!matchesCategory) return false
+    return true
   })
 
   return (
     <div>
       {/* Highly portable interactive CSS Keyframes loaded locally */}
       <style>{`
+        /* 1. Breathing Glow around the square head boundary */
         @keyframes breathing-glow {
           0%, 100% {
-            box-shadow: 0 0 6px rgba(249, 115, 22, 0.2), 0 0 10px rgba(249, 115, 22, 0.1);
-            border-color: rgba(249, 115, 22, 0.3);
+            box-shadow: 0 0 6px rgba(249, 115, 22, 0.15), 0 0 10px rgba(249, 115, 22, 0.08);
+            border-color: rgba(249, 115, 22, 0.25);
           }
           50% {
-            box-shadow: 0 0 18px rgba(249, 115, 22, 0.6), 0 0 30px rgba(249, 115, 22, 0.35);
-            border-color: rgba(249, 115, 22, 0.9);
+            box-shadow: 0 0 16px rgba(249, 115, 22, 0.5), 0 0 26px rgba(249, 115, 22, 0.3);
+            border-color: rgba(249, 115, 22, 0.8);
           }
         }
 
-        @keyframes star-fly {
-          0% {
-            transform: translate(-35px, -35px) scale(0) rotate(0deg);
-            opacity: 0;
-          }
-          20% {
-            opacity: 0;
-            transform: translate(-25px, -25px) scale(0.3) rotate(45deg);
-          }
-          35% {
-            opacity: 1;
-            transform: translate(-8px, -8px) scale(1) rotate(90deg);
-          }
-          50% {
-            transform: translate(5px, 5px) scale(1.3) rotate(180deg);
-            opacity: 1;
-            filter: drop-shadow(0 0 8px rgba(251, 191, 36, 1)) drop-shadow(0 0 14px rgba(251, 191, 36, 0.7));
-          }
-          65% {
-            transform: translate(22px, 22px) scale(0.7) rotate(270deg);
-            opacity: 0.8;
-          }
-          80% {
-            transform: translate(40px, 40px) scale(0) rotate(360deg);
-            opacity: 0;
-          }
-          100% {
-            transform: translate(40px, 40px) scale(0) rotate(360deg);
-            opacity: 0;
-          }
-        }
-
+        /* 2. Glassmorphic background shimmer sweep */
         @keyframes shimmer-sweep {
-          0% {
-            left: -100%;
-          }
-          50% {
-            left: 100%;
-          }
-          100% {
-            left: 100%;
-          }
+          0% { left: -100%; }
+          50% { left: 100%; }
+          100% { left: 100%; }
+        }
+
+        /* 3. Arm Waving rotation timeline (rotates around shoulder joint at x=90, y=55) */
+        @keyframes wave-arm {
+          0%, 100% { transform: rotate(0deg); }
+          50% { transform: rotate(-35deg); }
+        }
+
+        /* 4. Soft eye-blinking timeline for Light Mode */
+        @keyframes eye-blink {
+          0%, 90%, 100% { transform: scaleY(1); }
+          95% { transform: scaleY(0.1); }
+        }
+
+        /* 5. Staggered floating Zzz translations for Dark Mode */
+        @keyframes float-zzz-1 {
+          0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+          20% { opacity: 0.9; }
+          100% { transform: translate(14px, -24px) scale(1.1); opacity: 0; }
+        }
+
+        @keyframes float-zzz-2 {
+          0% { transform: translate(1px, 2px) scale(0.5); opacity: 0; }
+          20% { opacity: 0.9; }
+          100% { transform: translate(24px, -32px) scale(1.2); opacity: 0; }
+        }
+
+        @keyframes float-zzz-3 {
+          0% { transform: translate(-1px, 3px) scale(0.5); opacity: 0; }
+          20% { opacity: 0.9; }
+          100% { transform: translate(19px, -40px) scale(1.3); opacity: 0; }
+        }
+
+        /* 6. Floating CTA speech bubble translation */
+        @keyframes float-bubble {
+          0%, 100% { transform: translateY(-50%) translateY(0); }
+          50% { transform: translateY(-50%) translateY(-4px); }
+        }
+
+        /* Base mascot visibility definitions */
+        .light-mascot { display: block; }
+        .dark-mascot { display: none; }
+        .zzzs-container { display: none; }
+        .click-me-bubble { display: block; }
+
+        /* Shoulder arm waving anchor point configuration (locks to right border of the square face) */
+        .right-arm-wave {
+          transform-origin: 90px 55px;
+          animation: wave-arm 1.2s ease-in-out infinite;
+        }
+
+        /* Blinking eye anchor configuration */
+        .blinking-eyes {
+          transform-origin: 50px 35px;
+          animation: eye-blink 4.5s infinite ease-in-out;
+        }
+
+        /* Class-scoped Dark Mode overrides */
+        .dark .light-mascot { display: none; }
+        .dark .dark-mascot { display: block; }
+        .dark .zzzs-container { display: block; }
+        .dark .click-me-bubble { display: none; }
+
+        .zzz-char {
+          position: absolute;
+          font-family: monospace;
+          font-weight: 800;
+          color: #FBBF24;
+          opacity: 0;
+          text-shadow: 0 0 5px rgba(251, 191, 36, 0.4);
+        }
+
+        .zzz-char:nth-child(1) {
+          animation: float-zzz-1 3s infinite linear;
+        }
+        .zzz-char:nth-child(2) {
+          animation: float-zzz-2 3s infinite linear 1s;
+        }
+        .zzz-char:nth-child(3) {
+          animation: float-zzz-3 3s infinite linear 2s;
         }
       `}</style>
 
       {/* Top Search Controls Bar containing Hamburger Trigger and Input Field */}
-      <div className="mb-6 flex gap-3 items-center">
-        {/* Elegant Animated Hamburger Toggle Button */}
+      <div className="mb-6 flex gap-3 items-center relative">
+        {/* Animated Custom Stick-Buddy Toggle Button (The whole square face is the button!) */}
         <button
           onClick={() => setIsPanelOpen(true)}
-          className="relative p-3 bg-white dark:bg-gray-800 text-orange-600 dark:text-orange-400 border rounded-xl shadow-sm hover:bg-orange-50 dark:hover:bg-gray-700 hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer [animation:breathing-glow_3s_infinite_ease-in-out]"
+          className="relative w-16 h-16 bg-white dark:bg-gray-800 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-gray-700 rounded-2xl shadow-sm hover:bg-orange-50/50 dark:hover:bg-gray-700/60 hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer overflow-visible [animation:breathing-glow_3s_infinite_ease-in-out]"
           aria-label="Open categories menu"
         >
-          {/* Shimmer sweep effect overlay */}
-          <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-orange-500/10 dark:via-orange-400/20 to-transparent -skew-x-12 [animation:shimmer-sweep_6s_infinite_ease-in-out_1.5s] pointer-events-none" />
-
-          {/* Glowing Shooting Star flying into and across the button */}
-          <div className="absolute pointer-events-none [animation:star-fly_7s_infinite_ease-in-out_1s]">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-4 h-4 text-yellow-400 dark:text-yellow-300 drop-shadow-[0_0_4px_rgba(251,191,36,0.8)]"
-            >
-              <path d="M12 .587l3.668 7.431 8.067 1.35-5.833 5.688 1.382 8.067-7.284-3.83-7.285 3.83 1.382-8.067-5.833-5.688 8.067-1.35z" />
-            </svg>
+          {/* Shimmer sweep glass effect overlay */}
+          <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
+            <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-orange-500/10 dark:via-orange-400/20 to-transparent -skew-x-12 [animation:shimmer-sweep_6s_infinite_ease-in-out_2s]" />
           </div>
 
-          {/* Main Menu Icon */}
+          {/* Staggered Floating sleeping Zzz container */}
+          <div className="zzzs-container absolute top-1 right-2 pointer-events-none">
+            <span className="zzz-char text-[10px]">z</span>
+            <span className="zzz-char text-xs">z</span>
+            <span className="zzz-char text-sm">Z</span>
+          </div>
+
+          {/* Stick-Buddy Face Features & Out-of-Bounds Arms (style="overflow: visible" is vital!) */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 relative z-10"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+            viewBox="0 0 100 100"
+            className="w-full h-full relative z-10"
+            style={{ overflow: 'visible' }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
+            {/* Common Static Left Arm (Sticks out of the left border of the square face!) */}
+            <line x1="10" y1="55" x2="-14" y2="68" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" />
+
+            {/* --- LIGHT MODE GROUP: Smiling, Blinking & Waving --- */}
+            <g className="light-mascot">
+              {/* Blinking eyes group inside the square */}
+              <g className="blinking-eyes">
+                <circle cx="34" cy="38" r="3.5" fill="currentColor" />
+                <circle cx="66" cy="38" r="3.5" fill="currentColor" />
+              </g>
+              {/* Smiling Mouth inside the square */}
+              <path d="M 34 54 Q 50 68 66 54" stroke="currentColor" strokeWidth="4" fill="none" strokeLinecap="round" />
+              
+              {/* Waving Right Arm (Sticks completely OUT of the right border of the square face!) */}
+              <g className="right-arm-wave">
+                <line x1="90" y1="55" x2="128" y2="34" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" />
+              </g>
+            </g>
+
+            {/* --- DARK MODE GROUP: Cozy, Sleeping --- */}
+            <g className="dark-mascot">
+              {/* Sleeping Eyes (Closed curve segments) */}
+              <path d="M 28 36 Q 34 42 40 36" stroke="currentColor" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+              <path d="M 60 36 Q 66 42 72 36" stroke="currentColor" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+              {/* Cozy Rest mouth inside the square */}
+              <circle cx="50" cy="56" r="4" stroke="currentColor" strokeWidth="3.5" fill="none" />
+              
+              {/* Relaxed Right Arm (Draped down resting outside the right border) */}
+              <line x1="90" y1="55" x2="114" y2="76" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" />
+            </g>
           </svg>
+
+          {/* Interactive Bouncing "Click me" Speech Bubble overlay (Pushed further right to avoid the out-of-bounds waving arm!) */}
+          <div className="click-me-bubble absolute left-full ml-14 top-1/2 -translate-y-1/2 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-extrabold px-3 py-1.5 rounded-xl shadow-md whitespace-nowrap pointer-events-none select-none [animation:float-bubble_2s_infinite_ease-in-out] z-20">
+            Click me!
+            {/* Tiny arrow pointing left toward the waving hand */}
+            <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2.5 h-2.5 bg-red-600 rotate-45 rounded-sm" />
+          </div>
         </button>
 
         {/* Unified Search Input */}
