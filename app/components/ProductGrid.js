@@ -197,7 +197,7 @@ export default function ProductGrid({ products }) {
           </svg>
 
           {/* Interactive Bouncing "Click me" Speech Bubble overlay (Pushed further right to avoid the out-of-bounds waving arm!) */}
-          <div className="click-me-bubble absolute left-full ml-14 top-1/2 -translate-y-1/2 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-extrabold px-3 py-1.5 rounded-xl shadow-md whitespace-nowrap pointer-events-none select-none [animation:float-bubble_2s_infinite_ease-in-out] z-20">
+          <div className="click-me-bubble absolute left-full ml-1 top-1/2 -translate-y-1/2 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-extrabold px-3 py-1.5 rounded-xl shadow-md whitespace-nowrap pointer-events-none select-none [animation:float-bubble_2s_infinite_ease-in-out] z-20">
             Click me!
             {/* Tiny arrow pointing left toward the waving hand */}
             <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2.5 h-2.5 bg-red-600 rotate-45 rounded-sm" />
