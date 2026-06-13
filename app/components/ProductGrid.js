@@ -208,7 +208,7 @@ export default function ProductGrid({ products }) {
         </div>
       </div>
 
-      {/* Main Products Grid Section */}
+      {/* Main Products Grid Section (3-column layout on mobile, automatically scaling up on larger screens) */}
       {filteredProducts.length === 0 ? (
         <div className="text-center py-20">
           <p className="text-xl text-gray-500 dark:text-gray-400">
@@ -218,28 +218,30 @@ export default function ProductGrid({ products }) {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-4">
           {filteredProducts.map((product) => (
             <div
               key={product.id}
               onClick={() => setSelectedProduct(product)}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg cursor-pointer transition-all duration-300 hover:-translate-y-0.5 overflow-hidden border border-orange-100 dark:border-gray-700"
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5 overflow-hidden border border-orange-100 dark:border-gray-700 flex flex-col"
             >
-              <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
+              <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 relative">
                 <img
                   src={product.image_url}
                   alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-500 ease-out hover:scale-105"
                 />
               </div>
-              <div className="p-3">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 px-2 py-0.5 rounded">
-                  {product.category || 'Uncategorized'}
-                </span>
-                <h3 className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate mt-1">
-                  {product.name}
-                </h3>
-                <p className="text-red-600 dark:text-orange-400 font-bold mt-1">
+              <div className="p-2 sm:p-3 flex-1 flex flex-col justify-between bg-gradient-to-b from-transparent to-orange-50/10 dark:to-orange-950/5">
+                <div>
+                  <span className="text-[8px] sm:text-[10px] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 px-1.5 py-0.5 rounded">
+                    {product.category || 'Uncategorized'}
+                  </span>
+                  <h3 className="text-[11px] sm:text-sm font-semibold text-gray-800 dark:text-gray-200 mt-1 line-clamp-2 leading-snug">
+                    {product.name}
+                  </h3>
+                </div>
+                <p className="text-xs sm:text-base text-red-600 dark:text-orange-400 font-extrabold mt-2 border-t border-orange-100/40 dark:border-gray-700/50 pt-1">
                   ₱{Number(product.price).toFixed(2)}
                 </p>
               </div>
